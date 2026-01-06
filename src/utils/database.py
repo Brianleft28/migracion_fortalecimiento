@@ -78,14 +78,14 @@ class DatabaseManager:
     
     def bulk_insert(self, table_name, data_list):
         """Bulk insert data into a table using executemany for better performance."""
-        if not data_list:
-            logger.warning("No data to insert")
-            return 0
-        
-        # Validate table name to prevent SQL injection
+        # Validate table name to prevent SQL injection - do this first
         allowed_tables = ['beneficiarios', 'beneficios_ciudadanos']
         if table_name not in allowed_tables:
             raise ValueError(f"Table name not allowed: {table_name}")
+        
+        if not data_list:
+            logger.warning("No data to insert")
+            return 0
         
         # Get column names from first record
         columns = list(data_list[0].keys())
