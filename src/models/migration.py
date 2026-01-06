@@ -90,6 +90,11 @@ class BeneficiariosMigrator:
             Dictionary with summary statistics
         """
         try:
+            # Validate table name to prevent SQL injection
+            allowed_tables = ['beneficiarios', 'beneficios_ciudadanos']
+            if table_name not in allowed_tables:
+                raise ValueError(f"Table name not allowed: {table_name}")
+            
             query = f"SELECT COUNT(*) as total FROM {table_name}"
             result = self.db.execute_query(query)
             total = result[0][0] if result else 0
@@ -149,6 +154,11 @@ class BeneficiosCiudadanosUpdater:
             Number of records updated
         """
         try:
+            # Validate table names to prevent SQL injection
+            allowed_tables = ['beneficiarios', 'beneficios_ciudadanos']
+            if beneficiarios_table not in allowed_tables or beneficios_table not in allowed_tables:
+                raise ValueError("Table name not allowed")
+            
             logger.info(f"Updating {beneficios_table} from {beneficiarios_table}")
             
             # This is a generic update query that should be customized
@@ -194,6 +204,11 @@ class BeneficiosCiudadanosUpdater:
             Number of records updated
         """
         try:
+            # Validate table name to prevent SQL injection
+            allowed_tables = ['beneficiarios', 'beneficios_ciudadanos']
+            if beneficios_table not in allowed_tables:
+                raise ValueError(f"Table name not allowed: {beneficios_table}")
+            
             if ciudadano_id:
                 query = f"""
                     UPDATE {beneficios_table}
@@ -229,6 +244,11 @@ class BeneficiosCiudadanosUpdater:
             Dictionary with summary statistics
         """
         try:
+            # Validate table name to prevent SQL injection
+            allowed_tables = ['beneficiarios', 'beneficios_ciudadanos']
+            if beneficios_table not in allowed_tables:
+                raise ValueError(f"Table name not allowed: {beneficios_table}")
+            
             query = f"""
                 SELECT 
                     COUNT(*) as total,

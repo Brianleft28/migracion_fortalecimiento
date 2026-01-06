@@ -85,9 +85,9 @@ def main():
         logger.info("Initializing Excel reader...")
         excel_reader = ExcelReader(excel_file)
         
-        # Convert sheet name to int if it's numeric
+        # Convert sheet name to int if it's numeric string
         sheet_name = args.sheet_name
-        if sheet_name.isdigit():
+        if isinstance(sheet_name, str) and sheet_name.isdigit():
             sheet_name = int(sheet_name)
         
         logger.info(f"Sheet name: {sheet_name}")

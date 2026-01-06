@@ -77,10 +77,15 @@ class DatabaseManager:
             return result.rowcount
     
     def bulk_insert(self, table_name, data_list):
-        """Bulk insert data into a table."""
+        """Bulk insert data into a table using executemany for better performance."""
         if not data_list:
             logger.warning("No data to insert")
             return 0
+        
+        # Validate table name to prevent SQL injection
+        allowed_tables = ['beneficiarios', 'beneficios_ciudadanos']
+        if table_name not in allowed_tables:
+            raise ValueError(f"Table name not allowed: {table_name}")
         
         # Get column names from first record
         columns = list(data_list[0].keys())
@@ -90,8 +95,8 @@ class DatabaseManager:
         query = f"INSERT INTO {table_name} ({columns_str}) VALUES ({placeholders})"
         
         with self.get_session() as session:
-            for data in data_list:
-                session.execute(text(query), data)
+            # Use connection.execute with multiple parameters for true bulk insert
+            session.connection().execute(text(query), data_list)
         
         logger.info(f"Inserted {len(data_list)} records into {table_name}")
         return len(data_list)
